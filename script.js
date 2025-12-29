@@ -29,21 +29,77 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let currentTool = '', ratio = 1, img = new Image();
 
+    // Функция для показа главного экрана
+    function showMainScreen() {
+        el.mainS.classList.remove('hidden');
+        el.editS.classList.add('hidden');
+        currentTool = '';
+        // Добавляем запись в историю при возврате на главную
+        if (window.location.pathname !== '/' && window.location.search !== '') {
+            history.pushState({ screen: 'main' }, '', window.location.pathname);
+        }
+    }
+
+    // Функция для показа редактора с конкретным инструментом
+    function showEditor(tool, pushHistory = true) {
+        currentTool = tool;
+        const card = document.querySelector(`[data-tool="${tool}"]`);
+        if (!card) return;
+        
+        el.title.innerText = card.querySelector('h2').innerText;
+        el.mainS.classList.add('hidden');
+        el.editS.classList.remove('hidden');
+        
+        document.querySelectorAll('.setting-item').forEach(s => s.classList.add('hidden'));
+        const active = document.getElementById(`${currentTool}-settings`);
+        if(active) active.classList.remove('hidden');
+
+        currentTool === 'rounded' ? el.info.classList.remove('hidden') : el.info.classList.add('hidden');
+        
+        // Добавляем запись в историю браузера
+        if (pushHistory) {
+            history.pushState(
+                { screen: 'editor', tool: tool }, 
+                '', 
+                `?tool=${tool}`
+            );
+        }
+        
+        render();
+    }
+
+    // Обработка нажатий на карточки инструментов
     document.querySelectorAll('.tool-card').forEach(card => {
         card.onclick = () => {
-            currentTool = card.dataset.tool;
-            el.title.innerText = card.querySelector('h2').innerText;
-            el.mainS.classList.add('hidden');
-            el.editS.classList.remove('hidden');
-            
-            document.querySelectorAll('.setting-item').forEach(s => s.classList.add('hidden'));
-            const active = document.getElementById(`${currentTool}-settings`);
-            if(active) active.classList.remove('hidden');
-
-            currentTool === 'rounded' ? el.info.classList.remove('hidden') : el.info.classList.add('hidden');
-            render();
+            showEditor(card.dataset.tool, true);
         };
     });
+
+    // Обработка кнопки "Назад"
+    el.back.onclick = () => {
+        showMainScreen();
+    };
+
+    // Обработка нажатия кнопки "Назад" в браузере
+    window.addEventListener('popstate', (e) => {
+        if (e.state && e.state.screen === 'editor' && e.state.tool) {
+            // Возврат к редактору с конкретным инструментом
+            showEditor(e.state.tool, false);
+        } else {
+            // Возврат на главную
+            showMainScreen();
+        }
+    });
+
+    // Проверка URL при загрузке страницы (для прямых ссылок)
+    const urlParams = new URLSearchParams(window.location.search);
+    const toolParam = urlParams.get('tool');
+    if (toolParam) {
+        showEditor(toolParam, false);
+    } else {
+        // Устанавливаем начальное состояние для главной страницы
+        history.replaceState({ screen: 'main' }, '', window.location.pathname);
+    }
 
     el.fileInp.onchange = (e) => {
         const file = e.target.files[0];
@@ -114,7 +170,6 @@ document.addEventListener('DOMContentLoaded', () => {
         };
     });
 
-    el.back.onclick = () => location.reload();
     el.change.onclick = () => el.fileInp.click();
     el.uploadZ.onclick = () => el.fileInp.click();
     
