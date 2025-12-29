@@ -14,7 +14,6 @@ document.addEventListener('DOMContentLoaded', () => {
         previewZ: document.getElementById('preview-area'),
         title: document.getElementById('editor-title'),
         process: document.getElementById('process-btn'),
-        copy: document.getElementById('copy-btn'),
         qRange: document.getElementById('quality-range'),
         qVal: document.getElementById('quality-value'),
         wInp: document.getElementById('resize-width'),
@@ -125,31 +124,5 @@ document.addEventListener('DOMContentLoaded', () => {
         link.download = `AKD_${Date.now()}.${isPng ? 'png' : 'jpg'}`;
         link.href = canvas.toDataURL(isPng ? 'image/png' : 'image/jpeg', isPng ? 1.0 : el.qRange.value / 100);
         link.click();
-    };
-
-    el.copy.onclick = async () => {
-        try {
-            const type = currentTool === 'rounded' ? 'image/png' : 'image/jpeg';
-            canvas.toBlob(async (blob) => {
-                if (!blob) return;
-                try {
-                    const data = [new ClipboardItem({ [type]: blob })];
-                    await navigator.clipboard.write(data);
-                    
-                    const originalText = el.copy.innerText;
-                    el.copy.innerText = "Скопировано!";
-                    el.copy.classList.add('copied');
-                    
-                    setTimeout(() => {
-                        el.copy.innerText = originalText;
-                        el.copy.classList.remove('copied');
-                    }, 1500);
-                } catch (err) {
-                    alert('Для работы копирования нужен HTTPS или localhost');
-                }
-            }, type);
-        } catch (err) {
-            console.error(err);
-        }
     };
 });
