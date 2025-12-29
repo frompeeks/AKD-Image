@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AKD Image — Быстрый редактор</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+
+    <div id="main-screen" class="container">
+        <header>
+            <h1 class="logo"><span>AKD</span> Image</h1>
+            <p class="subtitle">Профессиональная обработка в один клик</p>
+        </header>
+
+        <main class="tool-stack">
+            <div class="tool-card" data-tool="compress">
+                <div class="icon-box"><i data-lucide="minimize"></i></div>
+                <div class="content">
+                    <h2>Сжать ИЗОБРАЖЕНИЕ</h2>
+                    <p>Сжимайте JPG, PNG и SVG экономя место и сохраняя качество.</p>
+                </div>
+            </div>
+            <div class="tool-card" data-tool="resize">
+                <div class="icon-box"><i data-lucide="maximize"></i></div>
+                <div class="content">
+                    <h2>Изменить РАЗМЕР</h2>
+                    <p>Задайте размеры в пикселях и измените размер JPG, PNG и SVG.</p>
+                </div>
+            </div>
+            <div class="tool-card" data-tool="convert">
+                <div class="icon-box"><i data-lucide="refresh-cw"></i></div>
+                <div class="content">
+                    <h2>Преобразовать в JPG</h2>
+                    <p>Конвертируйте разные форматы изображения в формат JPG.</p>
+                </div>
+            </div>
+            <div class="tool-card" data-tool="watermark">
+                <div class="icon-box"><i data-lucide="grid"></i></div>
+                <div class="content">
+                    <h2>Создание WATERMARK</h2>
+                    <p>Защитите свои работы уникальной сеткой из текста по всему кадру.</p>
+                </div>
+            </div>
+            <div class="tool-card" data-tool="rounded">
+                <div class="icon-box"><i data-lucide="square"></i></div>
+                <div class="content">
+                    <h2>Закругление углов</h2>
+                    <p>Сделайте ваши изображения мягче, задав идеальный радиус скругления.</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div id="editor-screen" class="container hidden">
+        <div class="nav-bar">
+            <div id="back-btn" class="back-card">На главную</div>
+            <div id="change-img-btn" class="back-card hidden">Поменять фото</div>
+            <div id="info-icon" class="info-icon hidden" data-title="При закруглении углов файл сохраняется в PNG для поддержки прозрачности.">
+                <i data-lucide="info" size="18"></i>
+            </div>
+        </div>
+        
+        <div class="editor-box">
+            <h2 id="editor-title">Инструмент</h2>
+            
+            <div id="upload-zone" class="upload-zone">
+                <i data-lucide="upload-cloud" size="40"></i>
+                <p>Выберите фото</p>
+                <input type="file" id="file-input" accept="image/*" hidden>
+            </div>
+
+            <div id="preview-area" class="hidden">
+                <div class="canvas-wrapper">
+                    <canvas id="main-canvas"></canvas>
+                </div>
+                
+                <div class="controls-stack">
+                    <div id="compress-settings" class="setting-item hidden">
+                        <label>Качество: <span id="quality-value">80</span>%</label>
+                        <input type="range" id="quality-range" min="1" max="100" value="80">
+                    </div>
+
+                    <div id="resize-settings" class="setting-item hidden">
+                        <div class="input-group">
+                            <input type="number" id="resize-width" placeholder="Ширина">
+                            <input type="number" id="resize-height" placeholder="Высота">
+                        </div>
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="maintain-aspect" checked> Сохранять пропорции
+                        </label>
+                    </div>
+
+                    <div id="watermark-settings" class="setting-item hidden">
+                        <input type="text" id="wm-text" placeholder="Текст защиты" class="styled-input">
+                        <div class="wm-options">
+                            <div class="option">
+                                <label>Цвет</label>
+                                <input type="color" id="wm-color" value="#000000">
+                            </div>
+                            <div class="option">
+                                <label>Прозрачность</label>
+                                <input type="range" id="wm-opacity" min="0.1" max="1" step="0.1" value="0.4">
+                            </div>
+                        </div>
+                        <label>Угол наклона</label>
+                        <input type="range" id="wm-rotate" min="-90" max="90" value="-30">
+                    </div>
+
+                    <div id="rounded-settings" class="setting-item hidden">
+                        <label>Радиус углов: <span id="radius-value">20</span>px</label>
+                        <input type="range" id="round-radius" min="0" max="500" value="20">
+                    </div>
+
+                    <div class="actions-stack">
+                        <button id="process-btn" class="primary-btn">Скачать результат</button>
+                        <button id="copy-btn" class="secondary-btn">Копировать в буфер</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
